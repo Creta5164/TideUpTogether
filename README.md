@@ -5,6 +5,7 @@
 </p>
 
 ### [Download mod](https://github.com/Creta5164/TideUpTogether/releases)
+### [Watch video](https://youtu.be/LxWGaGxT3QE)
 
 Synchronous and asynchronous multiplayer mod for Gustav's game : [TideUp](https://store.steampowered.com/app/1890520).
 

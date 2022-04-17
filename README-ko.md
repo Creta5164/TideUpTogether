@@ -5,6 +5,7 @@
 </p>
 
 ### [모드 다운로드](https://github.com/Creta5164/TideUpTogether/releases)
+### [영상으로 보기](https://youtu.be/LxWGaGxT3QE)
 
 Gustav님의 게임인 [TideUp](https://store.steampowered.com/app/1890520)의 동기 및 비동기 멀티플레이 모드입니다.
 
