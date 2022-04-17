@@ -24,7 +24,7 @@ Gustav님의 게임인 [TideUp](https://store.steampowered.com/app/1890520)의 �
 아는 사람들끼리 하고 싶다면, 여기 자체 호스팅을 하는 방법이 있습니다.
 
 1. Releases 탭에서 `TideUpTogetherServer.zip`을 받습니다.
-2. 각 플랫폼(Windows, MacOS, Linux 등)에 맞는 서버 프로그램을 찾습니다.
+2. 각 플랫폼(win, mac, linux 등)에 맞는 서버 프로그램을 찾습니다.
 3. `appsettings.json`를 열어 서버 설정을 구성한 뒤, 터미널(cmd 등)에서 서버를 실행합니다.
 
 클라이언트에서 해당 서버에 연결하려면 `www/js/plugins/TideUpTogether.js`의 첫번째 줄에서 주소에 해당하는 부분(따옴표로 쳐진 부분)을 연결하고 싶은 IP나 도메인으로 수정하세요.

@@ -24,7 +24,7 @@ Contributions are always welcome!
 If you want to do it with people you know, here's how to self-host.
 
 1. Get `TideUpTogetherServer.zip` from the Releases page.
-2. Find the server program for each platform(Windows, MacOS, Linux, etc.).
+2. Find the server program for each platform(win, mac, linux, etc.).
 3. After configuring the server settings by opening `appsettings.json`, run the server in a terminal (cmd, etc.).
 
 To connect to the server you want from the client, in the first line of `www/js/plugins/TideUpTogether.js`, change the part (inside of quotes) corresponding to the address to the IP or domain you want to connect to.
