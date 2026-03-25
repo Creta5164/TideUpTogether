@@ -1,4 +1,5 @@
-var Address = 'tideuptogether.kro.kr';
+var Address = 'tideuptogether.cretapark.me';
+var UseSSL  = true;
 
 (function() {
     
@@ -1189,14 +1190,14 @@ var Address = 'tideuptogether.kro.kr';
         try {
             
             this.connectionId = data.connectionId;
-            this.setImage(data.characterName, data.characterIndex);
-            this._pattern        = data.pattern;
-            this._animationCount = data.animationCount;
+            this.setImage(data.characterName, Math.floor(data.characterIndex));
+            this._pattern        = Math.floor(data.pattern);
+            this._animationCount = Math.floor(data.animationCount);
             
-            this.mapId  = data.mapId;
+            this.mapId  = Math.floor(data.mapId);
             this._realX = data.x;
             this._realY = data.y;
-            this.setDirection(data.direction);
+            this.setDirection(Math.floor(data.direction));
             
         } catch (err) {
             
@@ -1230,16 +1231,22 @@ var Address = 'tideuptogether.kro.kr';
         if (Connection)
             return;
         
-        HostAddress = address = address || 'localhost';
+        address = address || 'localhost';
+        
+        HostAddress = address;
         
         if (address === 'localhost' || address === '127.0.0.1')
-            console.warn("You tried connect to local computer.");
+            console.warn("Trying connect to local computer...");
         
         if (address.indexOf(':') === -1)
             address += ":14522";
         
+        address = UseSSL
+            ? ("https://" + address + '/')
+            : ("http://"  + address + '/');
+        
         Connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://" + address + '/', {
+            .withUrl(address, {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
             })

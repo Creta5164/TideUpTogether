@@ -1,19 +1,41 @@
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using TideUpTogetherServer;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TideUpTogetherServer;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSignalR()
-    .AddNewtonsoftJsonProtocol(
+
+builder.WebHost.ConfigureKestrel((context, serverOptions) => {
+    
+    var sslDir = context.Configuration["SslDirectory"];
+    var sslPwd = context.Configuration["SslPassword"];
+    
+    if (!string.IsNullOrEmpty(sslDir)) {
+        
+        var certPath = Path.Combine(sslDir, "cert.pfx");
+        
+        if (File.Exists(certPath)) {
+            
+            serverOptions.ListenAnyIP(14522, listenOptions => {
+                listenOptions.UseHttps(certPath, sslPwd);
+            });
+        }
+    }
+});
+
+builder.Services.AddSignalR(options => {
+        options.EnableDetailedErrors = true;
+    })
+    .AddJsonProtocol(
         options => {
             
-            options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            options.PayloadSerializerOptions.ReferenceHandler            = ReferenceHandler.IgnoreCycles;
+            options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;
+            options.PayloadSerializerOptions.IncludeFields               = true;
         }
     );
 
-builder.Services.AddMvc();
-builder.Services.AddEntityFrameworkSqlite().AddDbContext<CommentDbContext>();
+builder.Services.AddDbContext<CommentDbContext>();
 
 int messageCount = 5;
 int.TryParse(builder.Configuration["MessageCount"], out messageCount);
@@ -38,33 +60,26 @@ using(var scope = app.Services.CreateScope()) {
     dbContext.SaveChanges();
 }
 
-app.UseRouting();
+app.MapHub<NetworkHub>(string.Empty);
 
-app.UseEndpoints(endpoints => {
+app.MapPost("/comment", async (CommentData comment, CommentDbContext db) => {
     
-    endpoints.MapHub<NetworkHub>(string.Empty);
+    if (!comment.ValidateData())
+        return Results.BadRequest();
     
-    endpoints.MapPost("/comment", async (CommentData comment, CommentDbContext db) => {
-        
-        if (!comment.ValidateData())
-            return Results.BadRequest();
-        
-        db.CommentTable.Add(comment);
-        await db.SaveChangesAsync();
-        
-        return Results.Ok();
-    });
+    db.CommentTable.Add(comment);
+    await db.SaveChangesAsync();
     
-    endpoints.MapGet("/comment", async ([FromQuery]int mapId, CommentDbContext db) => {
-        
-        var random = new Random();
-        
-        return await db.CommentTable
-            .Where(c => c.MapId == mapId)
-            .OrderBy(r => EF.Functions.Random())
-            .Take(messageCount)
-            .ToArrayAsync();
-    });
+    return Results.Ok();
+});
+
+app.MapGet("/comment", async ([FromQuery]int mapId, CommentDbContext db) => {
+    
+    return await db.CommentTable
+        .Where(c => c.MapId == mapId)
+        .OrderBy(r => EF.Functions.Random())
+        .Take(messageCount)
+        .ToArrayAsync();
 });
 
 app.Run();

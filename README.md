@@ -30,17 +30,49 @@ If you want to do it with people you know, here's how to self-host.
 
 To connect to the server you want from the client, in the first line of `www/js/plugins/TideUpTogether.js`, change the part (inside of quotes) corresponding to the address to the IP or domain you want to connect to.
 
-```
+```js
 var Address = '127.0.0.1';
+var UseSSL  = false;
 ```
 
 The default port is `14522`.
+Set `UseSSL` to `true` if the server uses HTTPS, or `false` for HTTP (local/LAN).
+
+### HTTPS (optional)
+
+The server supports HTTPS via Kestrel. If you want to use a domain with SSL:
+
+1. Install [certbot](https://certbot.eff.org/) and issue a certificate:
+```bash
+sudo certbot certonly --standalone -d <domain>
+```
+
+2. Convert to PFX format:
+```bash
+openssl pkcs12 -export -out cert.pfx \
+  -inkey /etc/letsencrypt/live/<domain>/privkey.pem \
+  -in /etc/letsencrypt/live/<domain>/fullchain.pem \
+  -password pass:<password>
+```
+
+3. Configure `appsettings.json`:
+```json
+{
+  "Urls": "https://+:14522",
+  "SslDirectory": "<path to directory containing cert.pfx>",
+  "SslPassword": "<password>"
+}
+```
+
+4. Update the client's `TideUpTogether.js` address to your domain.
+
+> Without SSL settings, the server runs in HTTP mode (suitable for local/LAN use).
 
 # Build
 
 The client (`TideUpTogether.js`) is used immediately without going through the same process as bundling due to the environment of the RPG Maker MV, which is the basis of the game.
 
-The .NET SDK (6.0 or later) is required to build the server.
+The .NET SDK (10 or later) is required to build the server.
 
 After moving to the `TideUpTogetherServer` directory in the terminal, you can build it with the command below.
 
