@@ -4,7 +4,7 @@ namespace TideUpTogetherServer;
 
 public static class MapNames {
     
-    const string MAP_INFOS_PATH = "MapInfos.json";
+    const string MAP_INFOS_PATH = "../MapInfos.json";
     
     static readonly Dictionary<int, string> _names = [];
     
