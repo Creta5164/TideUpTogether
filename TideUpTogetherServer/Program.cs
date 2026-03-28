@@ -37,9 +37,9 @@ builder.Services.AddSignalR(options => {
 
 builder.Services.AddDbContext<CommentDbContext>();
 
-int messageCount = 5;
+int messageCount = 10;
 int.TryParse(builder.Configuration["MessageCount"], out messageCount);
-messageCount = Math.Clamp(messageCount, 0, 10);
+messageCount = Math.Clamp(messageCount, 0, 20);
 
 var app = builder.Build();
 
@@ -60,15 +60,25 @@ using(var scope = app.Services.CreateScope()) {
     dbContext.SaveChanges();
 }
 
+MapNames.Initialize();
+
 app.MapHub<NetworkHub>(string.Empty);
 
-app.MapPost("/comment", async (CommentData comment, CommentDbContext db) => {
+app.MapPost("/comment", async (CommentData comment, CommentDbContext db, ILogger<Program> logger) => {
     
     if (!comment.ValidateData())
         return Results.BadRequest();
     
     db.CommentTable.Add(comment);
     await db.SaveChangesAsync();
+    
+    logger.LogInformation(
+        "[Comment] Map {MapName} at ({X}, {Y}): {Message}",
+        MapNames.Get(comment.MapId),
+        comment.X,
+        comment.Y,
+        comment.ToMessageString()
+    );
     
     return Results.Ok();
 });

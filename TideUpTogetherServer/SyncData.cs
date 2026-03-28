@@ -13,4 +13,7 @@ public struct SyncData {
     public float MapId;
     public float X, Y;
     public float Direction;
+
+    public float Expression;
+    public float ExpressionFrame;
 }
