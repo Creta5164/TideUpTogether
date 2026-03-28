@@ -61,6 +61,7 @@ using(var scope = app.Services.CreateScope()) {
 }
 
 MapNames.Initialize();
+MessageTable.Initialize();
 
 app.MapHub<NetworkHub>(string.Empty);
 

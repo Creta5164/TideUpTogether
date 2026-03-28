@@ -14,7 +14,7 @@ public static class MapNames {
         
         if (!File.Exists(MAP_INFOS_PATH)) {
             
-            Console.WriteLine($"[MapNames] {MAP_INFOS_PATH} not found, map names will not be available.");
+            Console.WriteLine($"[{nameof(MapNames)}] {MAP_INFOS_PATH} not found, map names will not be available.");
             return;
         }
         
